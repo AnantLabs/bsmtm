@@ -1,0 +1,171 @@
+1 - Goal:
+    1-1 Generate an 'xsl' from an 'xsd' and a 'mapping table'
+    1-2 Xsl/Stax Transformation (out of the scope)
+    1-3 Test generator (out of the scope)
+2 - Design:
+    2-1 package com.beesphere.mtm.model
+    			Interface MappingLine
+					String 		getTarget ()
+						Target is the element path starting with '/' 
+						and represting only the element path '/data/rs/r' with no prefix
+					String 		getExpression ()
+						The input expression to select as value for the line target element
+						Note that to support Runtime variables or specific expression 
+						handling, implement an adequate MappingLine or override an extending class (see JsonMappingLine)
+					boolean 	isLoop ();
+						Ask if this it's a loop or not 
+					String 		getIterateOn ()
+						The input to iterate on it
+    			Interface MappingParameter (runtime parameter)
+					String 					name ()
+						the name of the parameter
+					String 					value ()
+						the value of the parameter
+					MappingParamaterKind 	kind ()
+						the kind of thi parameter (acctualy it's not used)
+    			Interface MappingTable
+					MappingLine find (String path, String attribute)
+						Find a line having it's target equals to the given path and attribute if any
+						Ex. find ('/data/rs/r', null) searching for '/data/rs/r'
+						Or  find ('/data/rs/r/c_0', 'title') searching for '/data/rs/r/c_0@title'
+					boolean isContributing (String path)
+						Search if there is a line that starts with 'path'.
+						Note that this can change from implmentation to another.
+						For example, JsonMappingTable verifies that the line is Valid and 
+						JsonMappingTable line selector selects this line.
+						JsonMappingTable requires that MappingLine.getId be unique.
+						So, when using JsonMappingTable/JsonMappingLine, you must override getId
+					int count ();
+						Getting the number mapping lines
+					List<MappingParameter> params ();
+						Getting the mapping table parameters
+    			
+    Those interfaces define the base operations used by the xsl generation process 			
+    
+    2-2 package com.beesphere.mtm
+    			Interface 	XslGenerator has the generate method accepting an XsdSchema and a MappingTable
+    2-3 package com.beesphere.mtm.impls
+    			Class		DefaultXslGenerator this generator outputs his processing to a writer
+    						By default the writer points to System.out
+    						Try to him an adequate writer created from an OutputStream and a charset
+    			
+    2-3 package com.beesphere.mtm.model.impls
+    			Class 		JsonMappingLine implements MappingLine by using an embeeded 'JSONObject line'
+    						It also adds an isValid method that verifies if the JSONObject 
+    						dont have the valid property or have it and equals to true
+    						(line.get (VALID) == null || line.getBoolean (VALID)).
+    						
+    						Important Note: In the current BeeSphere WMC Mtm implementation, 
+    						the valid property is not boolean, it's a string and 
+    						if the valid does not exist the line it's considered not valid.
+    						
+    						Make sure to refactor the current Mtm because in my opinion is wrong,
+    						or override the JsonMappingLine.isValid method by creating 
+    						a Class inhireting from JsonMappingLine.
+    						
+    			Class 		JsonMappingTable implements MappingTable by using an embeeded 'JSONArray lines'
+    						The JsonMappingTable isValid method invokes JsonMappingLine and tests if one of 
+    						'expression' or 'iterateOn' present in the JSONObject line.
+    						
+    						The find method uses the same JsonMappingTable as template when it finds 
+    						an occurence the given path. 
+    						It verifies that:
+    							- the given path exists as target of an existing line.
+    							- It uses JsonMappingLineSelector to verify if the line found can be selected.
+    							  The goal from a LineSelector is to filter line depending on some properties 
+    							  like targetModel (RichEntityId)
+    							  and calls isValid to see that the selected line has valid status
+    						
+3 - Usage:
+    3-1 Simple Usage: Convert an xsd using a Json mapping
+
+		XslGenerator generator = new DefaultXslGenerator ();
+		
+		String json = "{ data: [ {target: '/data/rs/r', valid: true} ] }";
+		
+		JsonMappingTable mappingTable = new JsonMappingTable (JSONObject.fromObject (json));
+		
+		generator.generate (
+			createSchema (new FileInputStream ("tests/sample.xsd")), 
+			mappingTable
+		);
+    			
+    3-2 Using JsonMappingLineSelector: select only some lines
+		In the WMC, it's the case, we have to select set lines for each targetModel (Output Type RichEntity).
+		For that reason, create a sub class of JsonMappingLineSelector interface
+		
+		WMCJsonMappingLineSelector implements JsonMappingLineSelector {
+			private static final long serialVersionUID = -8162509229532230233L;
+			
+			private String targetModel;
+			
+			public WMCJsonMappingLineSelector (String targetModel) {
+				this.targetModel = targetModel;
+			}
+
+			@Override
+			public boolean select (JsonMappingLine line) {
+				// We will select and generate xsl only for lines of richEntity (targetModel) = 10
+				String targetModel = line.getProperty ("targetModel");
+				return targetModel != null && targetModel.equals (this.targetModel);
+			}
+			
+		}
+		
+		XslGenerator generator = new DefaultXslGenerator ();
+		
+		String json = "{ data: [ {target: '/data/rs/r', targetModel: '10', expression: 'my exp', valid: true},  {target: '/data/rs/r', targetModel: '20', valid: true} ] }";
+		
+		JsonMappingTable mappingTable = new JsonMappingTable (JSONObject.fromObject (json));
+
+		// generate xsl for targetModel 10
+		mappingTable.setLineSelector (new WMCJsonMappingLineSelector ("10"));
+		generator.generate (
+			createSchema (new FileInputStream ("tests/re10.xsd")), 
+			mappingTable
+		);
+		
+		mappingTable.reset (); // free and reset MappingTable members
+    			
+		// generate xsl for targetModel 20
+		mappingTable.setLineSelector (new WMCJsonMappingLineSelector ("20"));
+		generator.generate (
+			createSchema (new FileInputStream ("tests/re20.xsd")), 
+			mappingTable
+		);
+		
+		mappingTable.reset (); // free and reset MappingTable members
+    			
+    3-3 Overriding and Using JsonMappingLine methods:
+    	In the WMC, a line may have a runtime variable, this is not implemented by default.
+    	To do such treatment, override JsonMappingLine getExpression method.
+    	
+    	WMCJsonMappingLine extends JsonMappingLine {
+    		@Override
+			public String getExpression () {
+				String expression = getProperty ("sysVarExp");
+				if (expression != null) {
+					expression = super.getExpression ();
+				}
+				// replace reid, prefixes, ... before returning expression
+				// like you do in the existing JsonAdapterDataModel.targetMappingsToJsonAdapterDataModel
+				return expression;
+			}
+    	}
+    	
+		String json = "{ data: [ {target: '/data/rs/r', targetModel: '10', expression: 'my exp', valid: true},  {target: '/data/rs/r', targetModel: '20', valid: true} ] }";
+		
+		JsonMappingTable mappingTable = new JsonMappingTable (JSONObject.fromObject (json));
+		
+		// set the line template
+		mappingTable.setMappingLineTemplate (new WMCJsonMappingLine ());
+
+		// generate xsl for targetModel 10
+		mappingTable.setLineSelector (new WMCJsonMappingLineSelector ("10"));
+		generator.generate (
+			createSchema (new FileInputStream ("tests/re10.xsd")), 
+			mappingTable
+		);
+    	
+    			
+    			
