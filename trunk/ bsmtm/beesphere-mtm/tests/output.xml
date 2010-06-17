@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<json:data xmlns:json="http://www.beesphere.net/xsds/2010/json">
+   <json:rs json:isArr="">
+      <json:rs_r>
+         <json:c_0>c11</json:c_0>
+         <json:c_1>c01</json:c_1>
+         <json:c_2/>
+         <json:c_3>c03</json:c_3>
+      </json:rs_r>
+      <json:rs_r>
+         <json:c_0>c12</json:c_0>
+         <json:c_1>c02</json:c_1>
+         <json:c_2/>
+         <json:c_3>c03</json:c_3>
+      </json:rs_r>
+      <json:rs_r>
+         <json:c_0>c13</json:c_0>
+         <json:c_1>c03</json:c_1>
+         <json:c_2/>
+         <json:c_3>c03</json:c_3>
+      </json:rs_r>
+   </json:rs>
+</json:data>

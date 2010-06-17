@@ -1,0 +1,90 @@
+{
+  "lines":   [
+        
+     {
+      "reId": "62",
+      "target": "/data/rs",
+      "expression": "/root/re61/data/rs",
+      valid:true,
+      order: "0"
+    },
+    {
+      "reId": "62",
+      "target": "/data/rs/@isArr",
+      "expression": "$v1",
+      valid:true,
+      order: "1"
+    },
+     {
+      "reId": "62",
+      "target": "/data/rs/rs_r",
+       "iterateOn": "/root/re61/data/rs/r",
+      "expression": "/root/re61/data/rs/r",
+      valid:true,
+      order: "3"
+    },
+    {
+      "reId": "62",
+      "target": "/data/rs/rs_r/c_0",
+      "expression": "/root/re61/data/rs/r/c_0",
+      valid:true,
+      order: "4"
+    },
+    {
+      "reId": "62",
+      "target": "/data/rs/rs_r/c_1",
+      "expression": "/root/re61/data/rs/r/c_1",
+      valid:true,
+      order: "5"
+    },
+    {
+      "reId": "62",
+      "target": "/data/rs/rs_r/c_2",
+      "expression": "/root/re61/data/rs/r/c_2",
+      valid:true,
+      order: "6"
+    },
+    {
+      "reId": "62",
+      "target": "/data/rs/rs_r/c_3",
+      "expression": "$v2",
+      valid:true,
+      order: "7"
+    }
+  ],
+  "namespaces": ["xmlns:json=\"http://www.beesphere.net/xsds/2010/json\"", "xmlns:txt=\"http://www.beesphere.net/xsds/2010/txt\""],
+  "in-params":   [
+    "com.soa.defaults.requestDate",
+    "com.beesphere.io.adapters.currentDate",
+    "com.soa.defaults.remoteUser"
+  ],
+  "expressions":   {
+    "v1":     {
+      "sid": "1",
+      "name": "isArr",
+      "varName": "v1",
+      "expression": "true",
+      "scope": "g",
+      "asVar": true,
+      "text": "true"
+    },
+    "v2":     {
+      "sid": "2",
+      "name": "toto",
+      "varName": "v2",
+      "expression": "/root/re61/data/rs/r/c_3",
+      "asVar": true,
+      "text": "/root/re61/data/rs/r/c_3"
+    },
+    "v4":     {
+      "sid": "3",
+      "name": "toto",
+      "varName": "v4",
+      "expression": "<xsl:variable name=\"v3\">true</xsl:variable>",
+      "asVar": false,
+      scope: 'g',
+      "text": "<xsl:variable name=\"v3\">true</xsl:variable>"
+    }
+  },
+  "out-params": {"62" : {indent: 'yes', namespace: "json"}}
+}

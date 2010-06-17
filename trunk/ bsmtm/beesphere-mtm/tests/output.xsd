@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:json="http://www.beesphere.net/xsds/2010/json"
+	targetNamespace="http://www.beesphere.net/xsds/2010/json"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="data">
+		<xs:annotation>
+			<xs:appinfo>Data Xsd</xs:appinfo>
+		</xs:annotation>
+		<xs:complexType>
+
+			<xs:sequence>
+				<xs:element name="rs" minOccurs="1" maxOccurs="1">
+					<xs:annotation>
+						<xs:appinfo>Rows</xs:appinfo>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="rs_r" minOccurs="1"
+								maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:appinfo>Row</xs:appinfo>
+								</xs:annotation>
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="c_0"
+											minOccurs="1" maxOccurs="1">
+											<xs:annotation>
+												<xs:appinfo>
+													Cell 1
+												</xs:appinfo>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="c_1"
+											minOccurs="1" maxOccurs="1">
+											<xs:annotation>
+												<xs:appinfo>
+													Cell 2
+												</xs:appinfo>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="c_2"
+											minOccurs="1" maxOccurs="1">
+											<xs:annotation>
+												<xs:appinfo>
+													Cell 3
+												</xs:appinfo>
+											</xs:annotation>
+										</xs:element>
+										<xs:element name="c_3"
+											minOccurs="1" maxOccurs="1">
+											<xs:annotation>
+												<xs:appinfo>
+													Cell 4
+												</xs:appinfo>
+											</xs:annotation>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="isArr" type="xs:boolean" />
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
