@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cn:data xmlns:cn="http://www.beesphere.net/xsds/2010/txt">
+   <cn:clients>
+      <cn:company>
+         <cn:name>compa</cn:name>
+         <cn:contacts>
+            <cn:contact>
+               <cn:name>john h</cn:name>
+               <cn:email>john@compa.com</cn:email>
+            </cn:contact>
+            <cn:contact>
+               <cn:name>tom b</cn:name>
+               <cn:email>tom.b@compa.com</cn:email>
+            </cn:contact>
+         </cn:contacts>
+      </cn:company>
+      <cn:company>
+         <cn:name>compb</cn:name>
+         <cn:contacts>
+            <cn:contact>
+               <cn:name>jim j</cn:name>
+               <cn:email>jim.j@compb.com</cn:email>
+            </cn:contact>
+            <cn:contact>
+               <cn:name>tim r</cn:name>
+               <cn:email>tim.r@compb.com</cn:email>
+            </cn:contact>
+         </cn:contacts>
+      </cn:company>
+   </cn:clients>
+</cn:data>

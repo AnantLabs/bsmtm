@@ -1,0 +1,49 @@
+{
+  lines:   [       
+     {
+      output: "loops",
+      expression: "/root/in1/data/companies/company",
+      iterateOn: "/root/in1/data/companies/company",
+      valid:true,
+      order: "0"
+    },{
+      output: "loops",
+      target: "/data/clients/company",
+      expression: "/root/in1/data/companies/company",
+      valid:true,
+      order: "1"
+    },{
+      output: "loops",
+      target: "/data/clients/company/name",
+      expression: "name",
+      valid:true,
+      order: "2"
+    },{
+      output: "loops",
+      target: "/data/clients/company/contacts/contact",
+      iterateOn: "employees/employee",
+      expression: "employees/employee",
+      valid:true,
+      order: "4"
+    },{
+      output: "loops",
+      target: "/data/clients/company/contacts/contact/name",
+      expression: "name",
+      valid:true,
+      order: "5"
+    },{
+      output: "loops",
+      target: "/data/clients/company/contacts/contact/email",
+      expression: "email",
+      valid:true,
+      order: "6"
+    }
+  ],
+  namespaces: ["xmlns:txt=\"http://www.beesphere.net/xsds/2010/txt\""],
+  in-params:   [
+    "com.soa.defaults.requestDate",
+    "com.beesphere.io.adapters.currentDate",
+    "com.soa.defaults.remoteUser"
+  ],
+  out-params: {"loops" : {indent: 'yes', namespace: "cn"}}
+}

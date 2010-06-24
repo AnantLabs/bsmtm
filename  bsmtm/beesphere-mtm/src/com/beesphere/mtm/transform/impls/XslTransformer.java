@@ -2,6 +2,9 @@ package com.beesphere.mtm.transform.impls;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -23,6 +26,7 @@ import org.xml.sax.InputSource;
 public class XslTransformer implements com.beesphere.mtm.transform.Transformer {
 	
 	private InputStream xsl;
+	private Map<String, String> runtimeParameters;
 	
 	public XslTransformer (InputStream xsl) {
 		this.xsl = xsl;
@@ -41,7 +45,17 @@ public class XslTransformer implements com.beesphere.mtm.transform.Transformer {
 		try {
 			Templates template = createTemplate (xsl);
 			Transformer transformer = template.newTransformer();
+			if (runtimeParameters != null) {
+				Iterator<String> names = runtimeParameters.keySet().iterator();
+				while (names.hasNext()) {
+					String name = names.next();
+					if (runtimeParameters.get(name) != null) {
+						transformer.setParameter(name, runtimeParameters.get(name));
+					}
+				}
+			}
 			transformer.setParameter("com.me.mycaracteristic", "myCarvalue");
+			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
 			transformer.setURIResolver (new URIResolver () {
 
 				public Source resolve(String href, String base)
@@ -63,5 +77,16 @@ public class XslTransformer implements com.beesphere.mtm.transform.Transformer {
 	public void transform(InputSource source, StreamResult result) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void addParameter(String name, String value) {
+		if (name == null) {
+			return;
+		}
+		if (runtimeParameters == null) {
+			runtimeParameters = new HashMap<String, String> ();
+		}
+		runtimeParameters.put(name, value);
 	}
 }

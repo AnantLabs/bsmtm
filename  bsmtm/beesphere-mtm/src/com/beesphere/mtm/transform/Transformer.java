@@ -11,4 +11,5 @@ public interface Transformer {
 
 	public void transform (InputStream source, OutputStream result) throws TransformerException;
 	public void transform (InputSource source, StreamResult result) throws TransformerException;
+	public void addParameter (String name, String value);
 }

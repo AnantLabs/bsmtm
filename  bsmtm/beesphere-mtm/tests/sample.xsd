@@ -2,41 +2,20 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="data">
-		<xs:annotation>
-			<xs:appinfo>plugin.xsd.basic.data</xs:appinfo>
-		</xs:annotation>
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="rs" minOccurs="1" maxOccurs="1">
-					<xs:annotation>
-						<xs:appinfo>plugin.xsd.basic.rs</xs:appinfo>
-					</xs:annotation>
 					<xs:complexType>
 						<xs:sequence>
 							<xs:element name="r" minOccurs="1"
 								maxOccurs="unbounded">
-								<xs:annotation>
-									<xs:appinfo>
-										plugin.xsd.basic.r
-									</xs:appinfo>
-								</xs:annotation>
 								<xs:complexType>
 									<xs:sequence>
 										<xs:element name="c_0"
 											minOccurs="1" maxOccurs="1">
-											<xs:annotation>
-												<xs:appinfo>
-													Cell 1
-												</xs:appinfo>
-											</xs:annotation>
 										</xs:element>
 										<xs:element name="c_1"
 											minOccurs="1" maxOccurs="1">
-											<xs:annotation>
-												<xs:appinfo>
-													Cell 2
-												</xs:appinfo>
-											</xs:annotation>
 										</xs:element>
 									</xs:sequence>
 								</xs:complexType>

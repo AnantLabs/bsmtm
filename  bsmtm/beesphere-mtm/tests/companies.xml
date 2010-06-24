@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<root>
+	<in1>
+		<data>
+			<companies>
+				<company>
+					<name>compa</name>
+					<employees>
+						<employee>
+							<name>john h</name>
+							<email>john@compa.com</email>
+							<function>General Director</function>
+						</employee>
+						<employee>
+							<name>tom b</name>
+							<email>tom.b@compa.com</email>
+							<function>Sales Manager</function>
+						</employee>
+					</employees>
+				</company>
+				<company>
+					<name>compb</name>
+					<employees>
+						<employee>
+							<name>jim j</name>
+							<email>jim.j@compb.com</email>
+							<function>Technical Director</function>
+						</employee>
+						<employee>
+							<name>tim r</name>
+							<email>tim.r@compb.com</email>
+							<function>Sales Manager</function>
+						</employee>
+					</employees>
+				</company>
+			</companies>
+		</data>
+	</in1>
+</root>

@@ -6,23 +6,23 @@
 	<xs:element name="data">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="rs" minOccurs="1" maxOccurs="1">
+				<xs:element name="rows" minOccurs="1" maxOccurs="1">
 					<xs:complexType>
 						<xs:sequence>
-							<xs:element name="r" minOccurs="1"
+							<xs:element name="row" minOccurs="1"
 								maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:sequence>
-										<xs:element name="c_0"
+										<xs:element name="cell_0"
 											minOccurs="1" maxOccurs="1">
 										</xs:element>
-										<xs:element name="c_1"
+										<xs:element name="cell_1"
 											minOccurs="1" maxOccurs="1">
 										</xs:element>
-										<xs:element name="c_2"
+										<xs:element name="cell_2"
 											minOccurs="1" maxOccurs="1">
 										</xs:element>
-										<xs:element name="c_3"
+										<xs:element name="cell_3"
 											minOccurs="1" maxOccurs="1">
 										</xs:element>
 									</xs:sequence>

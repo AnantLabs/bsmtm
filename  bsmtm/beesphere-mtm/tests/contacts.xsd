@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:txt="http://www.beesphere.net/xsds/2010/txt"
+	targetNamespace="http://www.beesphere.net/xsds/2010/txt"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:element name="data">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="clients" minOccurs="1" maxOccurs="1">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="company" minOccurs="1"
+								maxOccurs="unbounded">
+								<xs:complexType>
+									<xs:sequence>
+										<xs:element name="name"
+											minOccurs="1" maxOccurs="1"/>
+										<xs:element name="contacts"
+											minOccurs="1" maxOccurs="1">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="contact"
+																minOccurs="1" maxOccurs="1">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="name"
+																	minOccurs="1" maxOccurs="1">
+																</xs:element>
+																<xs:element name="email"
+																	minOccurs="1" maxOccurs="1">
+																</xs:element>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+												</xs:sequence>
+											</xs:complexType>
+										</xs:element>
+									</xs:sequence>
+								</xs:complexType>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
