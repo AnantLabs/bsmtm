@@ -1,62 +1,27 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <root>
-<re61>
-<data>
-	<hs>
-		<h_0>sdfdfh</h_0>
-		<h_1>sdkhk</h_1>
-	</hs>
-	<rs isArr="true">
-		<r>
-			<c_0>c11</c_0>
-			<c_1>c01</c_1>
-			<c_3>c03</c_3>
-			<s>
-				<s_0>r1_s11</s_0>
-				<s_1>r1_s01</s_1>
-			</s>
-			<s>
-				<s_0>r1_s11</s_0>
-				<s_1>r1_s01</s_1>
-			</s>
-			<s>
-				<s_0>r1_s11</s_0>
-				<s_1>r1_s01</s_1>
-			</s>
-		</r>
-		<r>
-			<c_0>c12</c_0>
-			<c_1>c02</c_1>
-			<s>
-				<s_0>r2_s11</s_0>
-				<s_1>r2_s01</s_1>
-			</s>
-			<s>
-				<s_0>r2_s11</s_0>
-				<s_1>r2_s01</s_1>
-			</s>
-			<s>
-				<s_0>r2_s11</s_0>
-				<s_1>r2_s01</s_1>
-			</s>
-		</r>
-		<r>
-			<c_0>c13</c_0>
-			<c_1>c03</c_1>
-			<s>
-				<s_0>r3_s11</s_0>
-				<s_1>r3_s01</s_1>
-			</s>
-			<s>
-				<s_0>r3_s11</s_0>
-				<s_1>r3_s01</s_1>
-			</s>
-			<s>
-				<s_0>r3_s11</s_0>
-				<s_1>r3_s01</s_1>
-			</s>
-		</r>
-	</rs>
-</data>
-</re61>
+	<in1>
+		<data>
+			<rs>
+				<r>
+					<c_0>john</c_0>
+					<c_1>16/07/1977</c_1>
+					<c_2>john@example.com</c_2>
+					<c_3>General Director</c_3>
+				</r>
+				<r>
+					<c_0>tom</c_0>
+					<c_1>09/12/1965</c_1>
+					<c_2>tom@example.com</c_2>
+					<c_3>Sales Manager</c_3>
+				</r>
+				<r>
+					<c_0>tim</c_0>
+					<c_1>12/05/1980</c_1>
+					<c_2>tim@example.com</c_2>
+					<c_3>Technical Director</c_3>
+				</r>
+			</rs>
+		</data>
+	</in1>
 </root>

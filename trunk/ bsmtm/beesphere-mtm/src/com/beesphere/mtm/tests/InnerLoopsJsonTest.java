@@ -1,6 +1,8 @@
 package com.beesphere.mtm.tests;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import com.beesphere.mtm.InvalidMappingTableException;
@@ -15,19 +17,19 @@ import com.qlogic.commons.utils.io.BinaryStreamsUtils;
 import com.qlogic.commons.utils.json.JsonException;
 import com.qlogic.commons.utils.json.JsonObject;
 
-public class JsonTest extends AbstractTest {
+public class InnerLoopsJsonTest extends AbstractTest {
 	
 	public static void main (String [] args) 
 		throws XslGeneratorException, XsdTypeNotFoundException, XsdInvalidEntityException, 
 		XsdParserException, IOException, JsonException, InvalidMappingTableException {
 		
-		String json = BinaryStreamsUtils.toString (new FileInputStream ("tests/mappings.mtm"));
+		String json = BinaryStreamsUtils.toString (new FileInputStream ("tests/contacts.mtm"));
 		JsonMappingTable model = new JsonMappingTable (new JsonObject(json));
 		
-		XslGenerator generator = new DefaultXslGenerator ();
-		model.setOutput ("62");
+		XslGenerator generator = new DefaultXslGenerator (new FileWriter (new File ("tests/contacts.xsl")));
+		model.setOutput ("loops");
 		generator.generate (
-			createSchema (new FileInputStream ("tests/output.xsd")), 
+			createSchema (new FileInputStream ("tests/contacts.xsd")), 
 			model
 		);
 		model.reset ();

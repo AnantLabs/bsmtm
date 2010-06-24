@@ -1,0 +1,112 @@
+{
+  lines:   [       
+     {
+      output: "out1",
+      target: "/data/rows",
+      expression: "/root/in1/data/rs",
+      valid:true,
+      order: "0"
+    },{
+      output: "out1",
+      target: "/data/rs/@isArr",
+      expression: "$v1",
+      valid:true,
+      order: "1"
+    },{
+      output: "out1",
+      target: "/data/rows/row",
+      iterateOn: "/root/in1/data/rs/r",
+      expression: "/root/in1/data/rs/r",
+      valid:true,
+      order: "3"
+    },{
+      output: "out1",
+      target: "/data/rows/row/cell_0",
+      expression: "/root/in1/data/rs/r/c_0",
+      valid:true,
+      order: "4"
+    },{
+      output: "out1",
+      target: "/data/rows/row/cell_1",
+      expression: "/root/in1/data/rs/r/c_1",
+      valid:true,
+      order: "5"
+    },{
+      output: "out1",
+      target: "/data/rows/row/cell_2",
+      expression: "/root/in1/data/rs/r/c_2",
+      valid:true,
+      order: "6"
+    },{
+      output: "out1",
+      target: "/data/rows/row/cell_3",
+      expression: "$v1",
+      valid:true,
+      order: "7"
+    },
+     {
+      output: "out2",
+      target: "/data/rs",
+      expression: "/root/in1/data/rs",
+      valid:true,
+      order: "8"
+    },{
+      output: "out2",
+      target: "/data/rs/@isArr",
+      expression: "$v1",
+      valid:true,
+      order: "9"
+    },{
+      output: "out2",
+      target: "/data/rs/rs",
+      iterateOn: "/root/in1/data/rs/r",
+      expression: "/root/in1/data/rs/r",
+      valid:true,
+      order: "10"
+    },{
+      output: "out2",
+      target: "/data/rs/r/c_0",
+      expression: "/root/in1/data/rs/r/c_0",
+      valid:true,
+      order: "11"
+    },{
+      output: "out2",
+      target: "/data/rs/r/c_1",
+      expression: "/root/in1/data/rs/r/c_1",
+      valid:true,
+      order: "12"
+    },{
+      output: "out2",
+      target: "/data/rs/r/c_2",
+      expression: "/root/in1/data/rs/r/c_2",
+      valid:true,
+      order: "13"
+    },{
+      output: "out2",
+      target: "/data/rs/r/c_3",
+      expression: "$v1",
+      valid:true,
+      order: "14"
+    }
+  ],
+  namespaces: ["xmlns:txt=\"http://www.beesphere.net/xsds/2010/txt\""],
+  in-params:   [
+    "com.soa.defaults.requestDate",
+    "com.beesphere.io.adapters.currentDate",
+    "com.soa.defaults.remoteUser"
+  ],
+  expressions:   {
+    v1: {
+      varName: "v1",
+      asVar: true,
+      text: "/root/in1/data/rs/r/c_3"
+    },
+    v2: {
+      varName: "v2",
+      asVar: false,
+      scope: 'g',
+      text: "<xsl:variable name=\"v3\">true</xsl:variable>"
+    }
+  },
+  out-params: {"out1" : {indent: 'yes', namespace: "out"}, "out2" : {indent: 'yes', namespace: "out2", omit-xml-declaration: 'yes'}}
+}

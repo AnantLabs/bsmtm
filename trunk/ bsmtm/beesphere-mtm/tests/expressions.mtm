@@ -1,46 +1,41 @@
 {
   lines:   [       
      {
-      output: "62",
+      output: "exps",
       target: "/data/rs",
       expression: "/root/in1/data/rs",
       valid:true,
       order: "0"
     },{
-      output: "62",
-      target: "/data/rs/@isArr",
-      expression: "$v1",
-      valid:true,
-      order: "1"
-    },{
-      output: "62",
-      target: "/data/rs/rs",
+      output: "exps",
+      target: "/data/rs/r",
       iterateOn: "/root/in1/data/rs/r",
       expression: "/root/in1/data/rs/r",
       valid:true,
+      vars: ['v2', 'v3'],
       order: "3"
     },{
-      output: "62",
+      output: "exps",
       target: "/data/rs/r/c_0",
-      expression: "/root/in1/data/rs/r/c_0",
+      expression: "$v1",
       valid:true,
       order: "4"
     },{
-      output: "62",
+      output: "exps",
       target: "/data/rs/r/c_1",
-      expression: "/root/in1/data/rs/r/c_1",
+      expression: "$cell1",
       valid:true,
       order: "5"
     },{
-      output: "62",
+      output: "exps",
       target: "/data/rs/r/c_2",
-      expression: "/root/in1/data/rs/r/c_2",
+      expression: "$v3",
       valid:true,
       order: "6"
     },{
-      output: "62",
+      output: "exps",
       target: "/data/rs/r/c_3",
-      expression: "$v1",
+      expression: "$myVar",
       valid:true,
       order: "7"
     }
@@ -49,20 +44,33 @@
   in-params:   [
     "com.soa.defaults.requestDate",
     "com.beesphere.io.adapters.currentDate",
-    "com.soa.defaults.remoteUser"
+    "com.soa.defaults.remoteUser",
+    "NOW"
   ],
   expressions:   {
     v1: {
       varName: "v1",
-      asVar: true,
-      text: "/root/in1/data/rs/r/c_3"
+      text: "concat('Employment', '-',current-date())",
+      asVar: true
     },
     v2: {
       varName: "v2",
+      text: "<xsl:variable name=\"cell1\" select=\"current()/c_2\"/>",
+      asVar: false,
+      scope: 'l'
+    },
+    v3: {
+      varName: "v3",
+      text: "$NOW",
+      asVar: true,
+      scope: 'l'
+    },
+    v4: {
+      varName: "v4",
       asVar: false,
       scope: 'g',
-      text: "<xsl:variable name=\"v3\">true</xsl:variable>"
+      text: "<xsl:variable name=\"myVar\" select=\"$com.soa.defaults.requestDate\"/>"
     }
   },
-  out-params: {"62" : {indent: 'yes', namespace: "out"}}
+  out-params: {"exps" : {indent: 'yes', namespace: "exps"}}
 }

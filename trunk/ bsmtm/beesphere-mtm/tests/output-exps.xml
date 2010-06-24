@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exps:data xmlns:exps="http://www.beesphere.net/xsds/2010/txt">
+   <exps:rs>
+      <exps:r>
+         <exps:c_0>Employment-2010-06-22Z</exps:c_0>
+         <exps:c_1>john@example.com</exps:c_1>
+         <exps:c_2>Tue Jun 22 16:47:53 GMT 2010</exps:c_2>
+         <exps:c_3>Tue Jun 22 16:47:53 GMT 2010</exps:c_3>
+      </exps:r>
+      <exps:r>
+         <exps:c_0>Employment-2010-06-22Z</exps:c_0>
+         <exps:c_1>tom@example.com</exps:c_1>
+         <exps:c_2>Tue Jun 22 16:47:53 GMT 2010</exps:c_2>
+         <exps:c_3>Tue Jun 22 16:47:53 GMT 2010</exps:c_3>
+      </exps:r>
+      <exps:r>
+         <exps:c_0>Employment-2010-06-22Z</exps:c_0>
+         <exps:c_1>tim@example.com</exps:c_1>
+         <exps:c_2>Tue Jun 22 16:47:53 GMT 2010</exps:c_2>
+         <exps:c_3>Tue Jun 22 16:47:53 GMT 2010</exps:c_3>
+      </exps:r>
+   </exps:rs>
+</exps:data>

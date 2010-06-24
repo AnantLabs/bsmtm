@@ -13,7 +13,7 @@
 
 	<target name="build">
 		<echo message="Creating Project Archive ${prj}" />
-		<jar jarfile="${prj}.jar">
+		<jar jarfile="${prj}-${VERSION}.jar">
 			<manifest>
 				<attribute name="${prj}" value="Version ${VERSION}" />
 			</manifest>
@@ -26,12 +26,12 @@
 				<exclude name="**/tests/**/*" />
 			</fileset>
 		</jar>
-		<copy file="${prj}.jar" todir="${dist}" />
-		<delete file="${prj}.jar" />
+		<copy file="${prj}-${VERSION}.jar" todir="${dist}" />
+		<delete file="${prj}-${VERSION}.jar" />
 	</target>
 	<target name="build-tests">
 		<echo message="Creating Project Archive ${prj}" />
-		<jar jarfile="${prj}-tests.jar">
+		<jar jarfile="${prj}-${VERSION}-tests.jar">
 			<manifest>
 				<attribute name="${prj}" value="Version ${VERSION}" />
 			</manifest>
@@ -43,8 +43,8 @@
 				<exclude name="**/log4j.properties" />
 			</fileset>
 		</jar>
-		<copy file="${prj}-tests.jar" todir="${dist}" />
-		<delete file="${prj}-tests.jar" />
+		<copy file="${prj}-${VERSION}-tests.jar" todir="${dist}" />
+		<delete file="${prj}-${VERSION}-tests.jar" />
 	</target>
 	
 	<import file="../beesphere-obf/build.xml" />
@@ -54,5 +54,5 @@
 		<antcall target="convert" />
 	</target>
 	
-	<target name="all" depends="build, obf" />
+	<target name="all" depends="build, build-tests, obf" />
 </project>

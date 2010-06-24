@@ -15,17 +15,17 @@ import com.qlogic.commons.utils.io.BinaryStreamsUtils;
 import com.qlogic.commons.utils.json.JsonException;
 import com.qlogic.commons.utils.json.JsonObject;
 
-public class JsonTest extends AbstractTest {
+public class ExpressionsJsonTest extends AbstractTest {
 	
 	public static void main (String [] args) 
 		throws XslGeneratorException, XsdTypeNotFoundException, XsdInvalidEntityException, 
 		XsdParserException, IOException, JsonException, InvalidMappingTableException {
 		
-		String json = BinaryStreamsUtils.toString (new FileInputStream ("tests/mappings.mtm"));
+		String json = BinaryStreamsUtils.toString (new FileInputStream ("tests/expressions.mtm"));
 		JsonMappingTable model = new JsonMappingTable (new JsonObject(json));
 		
 		XslGenerator generator = new DefaultXslGenerator ();
-		model.setOutput ("62");
+		model.setOutput ("exps");
 		generator.generate (
 			createSchema (new FileInputStream ("tests/output.xsd")), 
 			model
