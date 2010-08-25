@@ -2,7 +2,7 @@
 <project basedir="." default="build" name="Beesphere Multi-Dimensional Transformation and Mapping ">
 
 	<!-- Current version we are working towards -->
-	<property name="VERSION" value="1.0" />
+	<property name="VERSION" value="1.1" />
 	<!-- Project nick definition -->
 	<property name="prj" value="beesphere-mtm" />
 
@@ -27,6 +27,7 @@
 			</fileset>
 		</jar>
 		<copy file="${prj}-${VERSION}.jar" todir="${dist}" />
+		<copy file="${prj}-${VERSION}.jar" tofile="${dist}/${prj}.jar" />
 		<delete file="${prj}-${VERSION}.jar" />
 	</target>
 	<target name="build-tests">

@@ -86,7 +86,7 @@ public class PojoMappingTable extends AbstractMappingTable {
 	}
 
 	@Override
-	public String expression(MappingLine current) {
+	public String expression(MappingLine current, boolean forIteration) {
 		if (current == null) {
 			return null;
 		}

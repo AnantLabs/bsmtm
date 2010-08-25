@@ -21,7 +21,7 @@ public interface MappingTable extends Serializable {
 	Iterator<String> getExpressionsNames ();
 	MappingExpression getExpression (String name) throws InvalidMappingTableException;
 
-	String expression (MappingLine current) throws InvalidMappingTableException;
+	String expression (MappingLine current, boolean forIteration) throws InvalidMappingTableException;
 
 	MappingParameter getOutParameter (String name);
 

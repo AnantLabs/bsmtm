@@ -9,6 +9,7 @@ public class JsonMappingLine implements MappingLine {
 	private static final long serialVersionUID = 7779302209931760778L;
 	
 	public static final String OUTPUT		= "output";
+	public static final String ORDER		= "order";
 	public static final String TARGET		= "target";
 	public static final String ITERATE_ON 	= "iterateOn";
 	public static final String EXPRESSION 	= "expression";
@@ -54,7 +55,11 @@ public class JsonMappingLine implements MappingLine {
 		return getProperty (ITERATE_ON);
 	}
 
+	@Override
 	public String getProperty (String name) {
+		if (line == null) {
+			return null;
+		}
 		return (String)line.get (mappingTable.name (name));
 	}
 

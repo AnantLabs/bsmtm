@@ -54,5 +54,11 @@ public class PojoMappingLine implements MappingLine {
 		// TODO Auto-generated method stub
 		return expressionsNames;
 	}
+	
+	@Override
+	public String getProperty(String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

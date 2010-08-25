@@ -212,18 +212,32 @@ public class JsonMappingTable extends AbstractMappingTable {
 		if (attribute != null) {
 			target = path + XslStandard.ATTRIBUTE_ACCESSOR + attribute;
 		} 
+		MappingLine foundIteration = null;
 		for (int i = 0; i < lines.count (); i++) {
 			line.set ((JsonObject)lines.get (i));
-			
 			if (line.getTarget () != null && line.getTarget ().equals (target) && selector.select (line) && isValid (line)) {
-				if (line!= null && line.isLoop()) {
-					doneIterations.put(String.valueOf(i), line.getExpression());
+				if (line.isLoop()) {
+					String expression = line.getExpression();
+					if (expression == null || expression.trim().isEmpty()) {
+						expression = line.getIterateOn();
+					}
+					doneIterations.put(String.valueOf(i), expression);
 				}
 				if (!found.contains (target)) {
-					found.add (target);
+					if (!line.isLoop()) {
+						found.add (target);
+						return line;
+					} else {
+						foundIteration = line;
+					}
+				} else if (line.isLoop()) {
+					continue;
 				}
 				return line;
 			}
+		}
+		if (foundIteration != null) {
+			return foundIteration;
 		}
 		line.set (null);
 		return null;
@@ -239,15 +253,10 @@ public class JsonMappingTable extends AbstractMappingTable {
 		}
 		for (int i = 0; i < lines.count (); i++) {
 			line.set ((JsonObject)lines.get (i));
-			if (
-					((line.getTarget () == null && line.isLoop())  
-					|| (
-							line.getTarget () != null
-							&& line.getTarget ().startsWith (path + XmlStandard.SLASH))
-							&& selector.select (line)
-							&& isValid (line)
-					)
-			) {
+			if (!selector.select(line) || !isValid (line)) {
+				continue;
+			}
+			if (line.getTarget () != null && line.getTarget ().startsWith (path + XmlStandard.SLASH)) {
 				found.add (path);
 				return true;
 			}
@@ -284,31 +293,48 @@ public class JsonMappingTable extends AbstractMappingTable {
 
 	@Override
 	public MappingLine findIteration (MappingLine where) {
+		
+		//logger.debug("Searching iterations for :" + where);
+		
 		int size = lines.count ();
 		int iterationsSize = doneIterations.size ();
-		int index = doneIterations.size ();
+		int index = 0;
+		
 		boolean found = false;
 		while (index < size) {
 			nextLine.set((JsonObject)lines.get (index));
-			if (selector.select (nextLine) && isValid (nextLine) && nextLine.isLoop() && nextLine.getTarget() == null) {
-				found = (where!= null && 
-							!doneIterations.containsKey(String.valueOf(index))) || (where == null && iterationsSize > 0);
-				if (found) {
-					break;
-				}
+			if (!selector.select (nextLine) || !nextLine.isLoop() || !isValid (nextLine)) {
+				index ++;
+				continue;
+			}
+			found = where!= null && !doneIterations.containsKey (String.valueOf(index));
+			if (nextLine.getTarget() == null) {
+				found |= (where == null && iterationsSize > 0);
+			}
+			if (found) {
+				break;
 			}
 			index++;
 		}
-		if (!found || doneIterations.containsKey(String.valueOf(index))) {
+		if (!found || doneIterations.containsKey (String.valueOf (index))) {
+			return null;
+		}
+		int lineOrder = -1;
+		
+		if (line != null) {
+			lineOrder = Integer.parseInt (line.getProperty(JsonMappingLine.ORDER));
+		}
+		
+		if (index >= lineOrder) {
 			return null;
 		}
 		
-		doneIterations.put(String.valueOf(index), nextLine.getIterateOn ());
+		doneIterations.put(String.valueOf(index), nextLine.getIterateOn());
 		return nextLine;
 	}
 
 	@Override
-	public String expression (MappingLine current) throws InvalidMappingTableException {
+	public String expression (MappingLine current, boolean forIteration) throws InvalidMappingTableException {
 		if (current == null) {
 			return null;
 		}
@@ -323,29 +349,43 @@ public class JsonMappingTable extends AbstractMappingTable {
 				return variable.isVar() ? expression : variable.getContent();
 			}
 		}
-
-		int order = count ();
+		
+		int order = 0;
 		String exp = expression;
 		if (current.isLoop() && current.getIterateOn() != null) {
 			exp = current.getIterateOn();
 		}
 		
 		String lastAncestor = null;
-		order = count();
-		while (order >= 0) {
+		int lineOrder = Integer.parseInt(current.getProperty(JsonMappingLine.ORDER));
+		
+		while (order <= lineOrder) {
 			if (!doneIterations.containsKey (String.valueOf (order)) 
 					|| doneIterations.get (String.valueOf (order)) == null) {
-				order--;
+				order++;
 				continue;
 			}
-			
+			String ancestorCandidate = doneIterations.get (String.valueOf (order));
+			if (exp.equals (ancestorCandidate)) {
+				if (!current.isLoop() || !forIteration) {
+					lastAncestor = ancestorCandidate;
+					break;
+				}
+			}
+			if (!exp.contains (ancestorCandidate + XmlStandard.SLASH)) {
+				order++;
+				continue;
+			}
 			lastAncestor = doneIterations.get (String.valueOf (order));
-			
-			order--;
+			order ++;
 		}
 		
-		if (lastAncestor != null && exp.contains (lastAncestor + XmlStandard.SLASH)) {
-			return exp.replace (lastAncestor + XmlStandard.SLASH, XmlUtils.EMPTY);
+		if (lastAncestor != null) {
+			if ((!current.isLoop() || !forIteration) && exp.equals(lastAncestor)) {
+				return XslStandard.DOT;
+			} else if (exp.contains (lastAncestor + XmlStandard.SLASH)) {
+				return exp.replace (lastAncestor + XmlStandard.SLASH, XmlUtils.EMPTY);
+			}
 		}
 		
 		if (current.getIterateOn () != null) {
