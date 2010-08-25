@@ -28,6 +28,10 @@ import com.beesphere.xsd.model.XsdSchema;
 import com.beesphere.xsd.model.XsdSet;
 import com.beesphere.xsd.model.XsdSimpleType;
 
+/**
+ * @author A.BOUASSOULE
+ *
+ */
 public class DefaultXslGenerator implements XslGenerator {
 
 	private static final long serialVersionUID = -3890837229134445705L;
@@ -106,7 +110,24 @@ public class DefaultXslGenerator implements XslGenerator {
 		}
 		reset ();
 	}
-
+	
+	/**
+	 * First, searchs for a mapping line related to the xsd entity elementPath
+	 * If no line is found, the entity is checked to verify its contribution in the xsl.
+	 * Contribution means that a line exists with the exact path (elementPath), or which path contains the elementPath argument.
+	 * If neither conditions are validated the entity is ignored.
+	 * If the entity is a contributing element, the entity is handled depending on its xsd type.
+	 * 
+	 * 
+	 * @param owner, the xsd entity containing this entity
+	 * @param entity, the element we are searching for its mappings/iterations
+	 * @param elementPath, this is xpath like 'identifier' among the xsd schema
+	 * 
+	 * @return 
+	 * @throws IOException,
+	 * @throws InvalidMappingTableException, when the wrong mapping lines are provided  
+	 */
+	
 	private void writeElement(XsdManagedEntity owner, XsdElement entity,
 			String elementPath) throws IOException, InvalidMappingTableException {
 
@@ -119,6 +140,8 @@ public class DefaultXslGenerator implements XslGenerator {
 
 		MappingLine line = mappingTable.find(elementPath, null);
 
+		// if no valid line found for this path, and this path element is contributing just return
+		// A path is not contributing if no elements (lines) are related to this path
 		if (line == null && !mappingTable.isContributing(elementPath)) {
 			return;
 		}
@@ -128,19 +151,28 @@ public class DefaultXslGenerator implements XslGenerator {
 					line);
 		} else if (entity.getSimpleType() != null
 				&& !XmlUtils.isNullOrEmpty(getEntityName(entity.getSimpleType()))) {
-			writeSimpleEntity(entity, entity.getSimpleType(), line);
+			writeSimpleEntity(entity, entity.getSimpleType(), elementPath, line);
 		} else if (line != null) {
-			writeElementTag(entity, mappingTable.expression(line), true);
+			writeElementTag (entity, line);
 		}
 
 		writer.flush();
 	}
 
+	/**
+	 * @param owner
+	 * @param entity
+	 * @param elementPath
+	 * @param line
+	 * @throws IOException
+	 * @throws InvalidMappingTableException
+	 */
 	private void writeSimpleEntity(XsdManagedEntity owner,
-			XsdSimpleType entity, MappingLine line) throws IOException, InvalidMappingTableException {
+			XsdSimpleType entity, String elementPath, MappingLine line) throws IOException, InvalidMappingTableException {
 		if (entity == null) {
 			return;
 		}
+		boolean isLoop = line != null && line.isLoop();
 
 		int countAncestors = 0;
 		MappingLine nextLine = null;
@@ -149,47 +181,25 @@ public class DefaultXslGenerator implements XslGenerator {
 			while (nextLine != null && nextLine.isLoop()) {
 				countAncestors++;
 				XmlUtils.writeStartTag(XslStandard.FOR_EACH, false, writer);
-				XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable
-						.expression(nextLine), false, true, writer);
+				XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable.expression(nextLine, true), false, true, writer);
 				writeVariables(nextLine.getExpressionsNames());
 				nextLine = mappingTable.findIteration(nextLine);
 			}
 		}
 
 		// open for-each
-		if (line != null && line.isLoop()) {
+		if (isLoop) {
 			XmlUtils.writeStartTag(XslStandard.FOR_EACH, false, writer);
-			XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable
-					.expression(line), false, true, writer);
+			XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable.expression(line, true), false, true, writer);
 		}
 
-		writeElementTag(entity, null, true);
+		writeElementTag(entity, null, false);
+		
+		//TODO add simple entity subelements handling
 
-		int count = 0;
-		if (line != null) {
-			writeVariables(line.getExpressionsNames());
-			nextLine = mappingTable.findIteration(nextLine);
-			while (nextLine != null && nextLine.isLoop()) {
-				count++;
-				XmlUtils.writeStartTag(XslStandard.FOR_EACH, false, writer);
-				XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable
-						.expression(nextLine), false, true, writer);
-				writeVariables(nextLine.getExpressionsNames());
-				nextLine = mappingTable.findIteration(nextLine);
-			}
-			for (int i = 0; i < count; i++) {
-				XmlUtils.writeEndTag(XslStandard.FOR_EACH, writer);
-			}
-		}
-
-		if (line != null) {
-			for (int i = 0; i < count; i++) {
-				XmlUtils.writeEndTag(XslStandard.FOR_EACH, writer);
-			}
-		}
 		XmlUtils.writeEndTag(XslStandard.ELEMENT, writer);
 		// close for-each
-		if (line != null && line.isLoop()) {
+		if (isLoop) {
 			XmlUtils.writeEndTag(XslStandard.FOR_EACH, writer);
 		}
 		if (line != null) {
@@ -199,6 +209,14 @@ public class DefaultXslGenerator implements XslGenerator {
 		}
 	}
 
+	/**
+	 * @param owner
+	 * @param entity
+	 * @param elementPath
+	 * @param line
+	 * @throws IOException
+	 * @throws InvalidMappingTableException
+	 */
 	private void writeComplexEntity(XsdManagedEntity owner,
 			XsdComplexType entity, String elementPath, MappingLine line)
 			throws IOException, InvalidMappingTableException {
@@ -209,21 +227,19 @@ public class DefaultXslGenerator implements XslGenerator {
 		int count = 0;
 		MappingLine nextLine = null;
 		if (line != null) {
-			nextLine = mappingTable.findIteration(line);
+			nextLine = mappingTable.findIteration (line);
 			while (nextLine != null && nextLine.isLoop()) {
 				count++;
 				XmlUtils.writeStartTag(XslStandard.FOR_EACH, false, writer);
-				XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable
-						.expression(nextLine), false, true, writer);
+				XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable.expression(nextLine, true), false, true, writer);
 				writeVariables(nextLine.getExpressionsNames());
-				nextLine = mappingTable.findIteration(nextLine);
+				nextLine = mappingTable.findIteration (nextLine);
 			}
 		}
 
 		if (isLoop) {
 			XmlUtils.writeStartTag(XslStandard.FOR_EACH, false, writer);
-			XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable
-					.expression(line), false, true, writer);
+			XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable.expression(line, true), false, true, writer);
 		}
 
 		XmlUtils.writeStartTag(XslStandard.ELEMENT, false, writer);
@@ -234,24 +250,24 @@ public class DefaultXslGenerator implements XslGenerator {
 			writeAttribute(owner, entity.getAttribute(i), elementPath);
 		}
 
-		int countNexts = 0;
+		/*int countNexts = 0;
 		if (line != null) {
 			writeVariables(line.getExpressionsNames());
-			nextLine = mappingTable.findIteration(nextLine);
+			nextLine = mappingTable.findIteration(nextLine, elementPath);
 			while (nextLine != null && nextLine.isLoop()) {
 				countNexts++;
 				XmlUtils.writeStartTag(XslStandard.FOR_EACH, false, writer);
 				XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable
 						.expression(nextLine), false, true, writer);
 				writeVariables(nextLine.getExpressionsNames());
-				nextLine = mappingTable.findIteration(nextLine);
+				nextLine = mappingTable.findIteration(nextLine, elementPath);
 			}
-		}
+		}*/
 		writeSet(owner, entity.getSet(), elementPath);
 
-		for (int i = 0; i < countNexts; i++) {
+		/*for (int i = 0; i < countNexts; i++) {
 			XmlUtils.writeEndTag(XslStandard.FOR_EACH, writer);
-		}
+		}*/
 
 		XmlUtils.writeEndTag (XslStandard.ELEMENT, writer);
 
@@ -279,8 +295,57 @@ public class DefaultXslGenerator implements XslGenerator {
 		}
 	}
 
+	private void writeElementTag(XsdManagedEntity entity, MappingLine line) throws IOException, InvalidMappingTableException {
+		if (entity == null) {
+			return;
+		}
+		boolean isLoop = line != null && line.isLoop();
+
+		int countAncestors = 0;
+		MappingLine nextLine = null;
+		if (line != null) {
+			nextLine = mappingTable.findIteration(line);
+			while (nextLine != null && nextLine.isLoop()) {
+				countAncestors++;
+				XmlUtils.writeStartTag(XslStandard.FOR_EACH, false, writer);
+				XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable
+						.expression(nextLine, true), false, true, writer);
+				writeVariables(nextLine.getExpressionsNames());
+				nextLine = mappingTable.findIteration(nextLine);
+			}
+		}
+
+		String selectValue = mappingTable.expression(line, false);
+		// open for-each
+		if (isLoop) {
+			XmlUtils.writeStartTag(XslStandard.FOR_EACH, false, writer);
+			XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable.expression(line, true), false, true, writer);
+		}
+
+		XmlUtils.writeStartTag(XslStandard.ELEMENT, false, writer);
+		XmlUtils.writeNameAttribute(namespace, getEntityName(entity), false,
+				true, writer);
+		if (selectValue != null) {
+			writeSelectValueTag(selectValue);
+		}
+		XmlUtils.writeEndTag(XslStandard.ELEMENT, writer);
+		// close for-each
+		if (isLoop) {
+			XmlUtils.writeEndTag(XslStandard.FOR_EACH, writer);
+		}
+		if (line != null) {
+			for (int i = 0; i < countAncestors; i++) {
+				XmlUtils.writeEndTag(XslStandard.FOR_EACH, writer);
+			}
+		}
+	}
+
 	private void writeElementTag(XsdManagedEntity entity, String selectValue,
-			boolean endElement) throws IOException {
+			boolean endElement) throws IOException, InvalidMappingTableException {
+		if (entity == null) {
+			return;
+		}
+
 		XmlUtils.writeStartTag(XslStandard.ELEMENT, false, writer);
 		XmlUtils.writeNameAttribute(namespace, getEntityName(entity), false,
 				true, writer);
@@ -304,7 +369,7 @@ public class DefaultXslGenerator implements XslGenerator {
 				true, writer);
 		XmlUtils.writeStartTag(XslStandard.VALUE_OF, false, writer);
 		XmlUtils.writeAttribute(XslStandard.SELECT_ATTR, mappingTable
-				.expression(line), false, false, writer);
+				.expression(line, false), false, false, writer);
 		XmlUtils.endTag(writer);
 		XmlUtils.writeEndTag(XslStandard.ATTRIBUTE, writer);
 	}

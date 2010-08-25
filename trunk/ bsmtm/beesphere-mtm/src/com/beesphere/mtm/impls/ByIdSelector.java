@@ -18,6 +18,9 @@ public class ByIdSelector implements OutputSelector {
 	
 	@Override
 	public boolean select (Selectable selectable) {
+		if (selectable == null) {
+			return false;
+		}
 		return selectable.getOutput () != null && selectable.getOutput ().equals (id);
 	}
 	

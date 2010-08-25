@@ -5,14 +5,20 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.beesphere.mtm.transform.TransformerException;
 import com.beesphere.mtm.transform.impls.XslTransformer;
 
 public class XslBasicTransformer {
+	
+	private final static Logger logger = LoggerFactory.getLogger (XslBasicTransformer.class);
+	
 	public static void main(String[] args) throws FileNotFoundException {
 		
 		if (args == null || args.length < 3) {
-			System.out.print(">> You must provide the 3 mandatory arguments : xsl file [Arg1], xml input file [Arg3], xml output file [Arg3]");
+			logger.debug (">> You must provide the 3 mandatory arguments : xsl file [Arg1], xml input file [Arg3], xml output file [Arg3]");
 			System.exit(0);
 		}
 		
@@ -40,7 +46,7 @@ public class XslBasicTransformer {
 			} catch (IOException ioex) {
 			}
 		}
-		System.out.print(">> Transformation processedd successfuly");
+		logger.debug (">> Transformation processedd successfuly");
 	}
 	
 

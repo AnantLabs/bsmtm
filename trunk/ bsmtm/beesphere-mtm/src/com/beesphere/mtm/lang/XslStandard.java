@@ -2,6 +2,7 @@ package com.beesphere.mtm.lang;
 
 public interface XslStandard {
 
+	String DOT = ".";
 	String NAME = "name";
 	String EMPTY_STRING = "''";
 	
